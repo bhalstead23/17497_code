@@ -45,8 +45,8 @@ public class Robot extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-        drive = new Drive();
-        elevator = new Elevator();
+        drive = new Drive(hardwareMap, gamepad1, telemetry);
+        elevator = new Elevator(hardwareMap);
         intake = new Intake();
         arm = new Arm();
 
@@ -67,7 +67,7 @@ public class Robot extends OpMode
     @Override
     public void start() {
         runtime.reset();
-        drive.teleopInit(self);
+        drive.teleopInit();
     }
 
     /*
@@ -75,6 +75,7 @@ public class Robot extends OpMode
      */
     @Override
     public void loop() {
+        drive.teleopPeriodic();
 /*        // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;

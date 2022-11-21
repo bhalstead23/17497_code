@@ -18,7 +18,7 @@ public class IntakeElevatorLift2 extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    RightArm = hardwareMap.get(DcMotor.class, "Right Arm");
+    RightArm = hardwareMap.get(DcMotor.class, "RightArm");
     RightElevator = hardwareMap.get(DcMotor.class, "RightElevator");
     LeftArm = hardwareMap.get(DcMotor.class, "LeftArm");
     LeftElevator = hardwareMap.get(DcMotor.class, "LeftElevator");
