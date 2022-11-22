@@ -5,15 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Arm;
-import org.firstinspires.ftc.teamcode.Drive;
-import org.firstinspires.ftc.teamcode.Elevator;
-import org.firstinspires.ftc.teamcode.Intake;
 
-
-@TeleOp(name="Full TeleOp", group="Iterative Opmode")
-public class Robot extends OpMode
-{
+@TeleOp(name = "Full TeleOp", group = "Iterative Opmode")
+public class RobotTeleOp extends OpMode {
     private Drive drive;
     private Elevator elevator;
     private Intake intake;
