@@ -8,13 +8,23 @@ public class Intake {
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
 
-    public Intake(HardwareMap hardwareMap, Gamepad gamepad1){
+    public Intake(HardwareMap hardwareMap, Gamepad gamepad1) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
     }
+
+    public void autoInit() {
+
+    }
+
+    public void autoPeriodic() {
+
+    }
+
     public void teleopInit() {
 
     }
+
     public void teleopPeriodic() {
 
     }

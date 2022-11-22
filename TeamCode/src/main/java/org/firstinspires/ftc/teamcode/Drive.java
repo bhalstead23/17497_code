@@ -26,6 +26,14 @@ public class Drive {
         BackRightMotor.setPower(-right);
     }
 
+    public void autoInit() {
+
+    }
+
+    public void autoPeriodic() {
+
+    }
+
     public void teleopInit() {
         FrontRightMotor = hardwareMap.get(DcMotor.class, "FrontRightMotor");
         FrontLeftMotor = hardwareMap.get(DcMotor.class, "FrontLeftMotor");

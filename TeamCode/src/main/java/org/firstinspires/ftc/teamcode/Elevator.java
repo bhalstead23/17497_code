@@ -11,7 +11,7 @@ public class Elevator {
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
 
-    public Elevator(HardwareMap hardwareMap, Gamepad gamepad1){
+    public Elevator(HardwareMap hardwareMap, Gamepad gamepad1) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
     }
@@ -20,9 +20,18 @@ public class Elevator {
 
     }
 
+    public void autoInit() {
+
+    }
+
+    public void autoPeriodic() {
+
+    }
+
     public void teleopInit() {
 
     }
+
     public void teleopPeriodic() {
 
     }

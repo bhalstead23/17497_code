@@ -11,7 +11,7 @@ public class Arm {
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
 
-    public Arm(HardwareMap hardwareMap, Gamepad gamepad1){
+    public Arm(HardwareMap hardwareMap, Gamepad gamepad1) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
     }
@@ -20,9 +20,18 @@ public class Arm {
 
     }
 
+    public void autoInit() {
+
+    }
+
+    public void autoPeriodic() {
+
+    }
+
     public void teleopInit() {
 
     }
+
     public void teleopPeriodic() {
 
     }
