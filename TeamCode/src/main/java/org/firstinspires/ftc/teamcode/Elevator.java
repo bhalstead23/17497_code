@@ -20,6 +20,11 @@ public class Elevator {
 
     }
 
+    public void setPowers(float power) {
+        LeftElevator.setPower(power);
+        RightElevator.setPower(-power);
+    }
+
     public void autoInit() {
 
     }
@@ -29,10 +34,11 @@ public class Elevator {
     }
 
     public void teleopInit() {
-
+        LeftElevator = hardwareMap.get(DcMotor.class, "LeftElevator");
+        RightElevator = hardwareMap.get(DcMotor.class, "RightElevator");
     }
 
     public void teleopPeriodic() {
-
+        setPowers(gamepad.right_stick_y);
     }
 }
