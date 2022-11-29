@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-    private HardwareMap hardwareMap;
-    private Gamepad gamepad;
+public class TelemetryHelper {
+    private Telemetry telemetry;
 
-    public Intake(HardwareMap hardwareMap, Gamepad gamepad1) {
-        this.hardwareMap = hardwareMap;
-        this.gamepad = gamepad1;
+    public TelemetryHelper(Telemetry telemetry) {
+        this.telemetry = telemetry;
     }
+
 
     public void autoInit() {
 
@@ -22,7 +22,7 @@ public class Intake {
     }
 
     public void teleopInit() {
-        
+
     }
 
     public void teleopPeriodic() {

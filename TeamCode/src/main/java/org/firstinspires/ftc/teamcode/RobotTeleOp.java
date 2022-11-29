@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.Map;
 
 
 @TeleOp(name = "Full TeleOp", group = "Iterative Opmode")
@@ -57,7 +62,8 @@ public class RobotTeleOp extends OpMode {
      */
     @Override
     public void loop() {
-        drive.teleopPeriodic();
+        Map driveTelem = drive.teleopPeriodic();
+
         elevator.teleopPeriodic();
         arm.teleopPeriodic();
         intake.teleopPeriodic();

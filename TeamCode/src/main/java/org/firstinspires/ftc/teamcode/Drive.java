@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Drive {
     private DcMotor FrontRightMotor;
@@ -14,16 +17,16 @@ public class Drive {
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
 
-    public Drive(HardwareMap hardwareMap, Gamepad gamepad1){
+    public Drive(HardwareMap hardwareMap, Gamepad gamepad1) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
     }
 
-    public void setPowers(float left, float right) {
-        FrontLeftMotor.setPower(left);
-        BackLeftMotor.setPower(left);
-        FrontRightMotor.setPower(-right);
-        BackRightMotor.setPower(-right);
+    public void setPowers(double left, double right) {
+        FrontLeftMotor.setPower(-left);
+        BackLeftMotor.setPower(-left);
+        FrontRightMotor.setPower(right);
+        BackRightMotor.setPower(right);
     }
 
     public void autoInit() {
@@ -42,9 +45,15 @@ public class Drive {
 
     }
 
-    public void teleopPeriodic() {
-        float leftPower = gamepad.left_stick_y + -gamepad.left_stick_x;
-        float rightPower = gamepad.left_stick_y + gamepad.left_stick_x;
+    public Map teleopPeriodic() {
+        double leftPower = gamepad.left_stick_y + gamepad.left_stick_x;
+        double rightPower = gamepad.left_stick_y + -gamepad.left_stick_x;
         setPowers(leftPower, rightPower);
+        Map telemetry = new HashMap<String, Double>();
+        telemetry.put("leftPower", leftPower);
+        telemetry.put("rightPower", rightPower);
+        telemetry.put("left_stick_y", gamepad.left_stick_y);
+        telemetry.put("left_stick_x", gamepad.left_stick_x);
+        return telemetry;
     }
 }
