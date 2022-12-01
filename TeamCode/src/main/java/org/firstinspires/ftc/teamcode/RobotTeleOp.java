@@ -65,8 +65,11 @@ public class RobotTeleOp extends OpMode {
         Map driveTelem = drive.teleopPeriodic();
 
         elevator.teleopPeriodic();
-        arm.teleopPeriodic();
+        String armTelem = arm.teleopPeriodic();
         intake.teleopPeriodic();
+
+        telemetry.addData("Angle", armTelem);
+        telemetry.update();
     }
 
     /*
