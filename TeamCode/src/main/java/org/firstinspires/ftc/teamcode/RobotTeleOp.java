@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,6 +19,8 @@ public class RobotTeleOp extends OpMode {
     private Intake intake;
     private Arm arm;
 
+    private FtcDashboard dashboard;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
@@ -28,13 +31,17 @@ public class RobotTeleOp extends OpMode {
      */
     @Override
     public void init() {
-        drive = new Drive(hardwareMap, gamepad1);
+        dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
+
+        drive = new Drive(hardwareMap, gamepad1, telemetry);
         elevator = new Elevator(hardwareMap, gamepad1);
         intake = new Intake(hardwareMap, gamepad1);
-        arm = new Arm(hardwareMap, gamepad1);
+        arm = new Arm(hardwareMap, gamepad1, telemetry);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     /*
@@ -62,13 +69,11 @@ public class RobotTeleOp extends OpMode {
      */
     @Override
     public void loop() {
-        Map driveTelem = drive.teleopPeriodic();
-
+        drive.teleopPeriodic();
         elevator.teleopPeriodic();
-        String armTelem = arm.teleopPeriodic();
+        arm.teleopPeriodic();
         intake.teleopPeriodic();
 
-        telemetry.addData("Angle", armTelem);
         telemetry.update();
     }
 

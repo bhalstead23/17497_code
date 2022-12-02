@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +18,12 @@ public class Drive {
 
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
+    private Telemetry telemetry;
 
-    public Drive(HardwareMap hardwareMap, Gamepad gamepad1) {
+    public Drive(HardwareMap hardwareMap, Gamepad gamepad1, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
+        this.telemetry = telemetry;
     }
 
     public void setPowers(double left, double right) {
@@ -45,15 +49,14 @@ public class Drive {
 
     }
 
-    public Map teleopPeriodic() {
+    public void teleopPeriodic() {
         double leftPower = gamepad.left_stick_y + gamepad.left_stick_x;
         double rightPower = gamepad.left_stick_y + -gamepad.left_stick_x;
         setPowers(leftPower, rightPower);
-        Map telemetry = new HashMap<String, Double>();
-        telemetry.put("leftPower", leftPower);
-        telemetry.put("rightPower", rightPower);
-        telemetry.put("left_stick_y", gamepad.left_stick_y);
-        telemetry.put("left_stick_x", gamepad.left_stick_x);
-        return telemetry;
+
+        telemetry.addData("leftPower", leftPower);
+        telemetry.addData("rightPower", rightPower);
+        telemetry.addData("left_stick_y", gamepad.left_stick_y);
+        telemetry.addData("left_stick_x", gamepad.left_stick_x);
     }
 }

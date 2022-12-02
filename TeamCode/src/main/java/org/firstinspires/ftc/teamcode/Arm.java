@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -8,7 +10,10 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.arcrobotics.ftclib.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 @SuppressWarnings("SpellCheckingInspection")
+@Config
 public class Arm {
     private Motor rightArm;
     private Motor leftArm;
@@ -16,25 +21,29 @@ public class Arm {
 
     private HardwareMap hardwareMap;
     private Gamepad gamepad;
+    private Telemetry telemetry;
 
     private PIDFController pidfController;
     private ArmFeedforward feedforward;
 
-    private double kp = 0.0005;
-    private double ki = 0;
-    private double kd = 0;
-    private double kf = 0;
+    public static double kp = 0.0005;
+    public static double ki = 0;
+    public static double kd = 0;
+    public static double kf = 0;
 
-    private double ks = 1; //static gain
-    private double kcos = 1; //gravity gain
-    private double kv = 1; //velocity gain
-    private double ka = 1; //acceleration gain
+    public static double ks = 0; //static gain
+    public static double kcos = 0; //gravity gain
+    public static double kv = 0; //velocity gain
+    public static double ka = 0; //acceleration gain
 
     private double target;
+    private double output;
+    private double angle;
 
-    public Arm(HardwareMap hardwareMap, Gamepad gamepad1) {
+    public Arm(HardwareMap hardwareMap, Gamepad gamepad1, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.gamepad = gamepad1;
+        this.telemetry = telemetry;
     }
 
     public void setTarget(double target) {
@@ -58,15 +67,24 @@ public class Arm {
         armMotors = new MotorGroup(rightArm, leftArm);
         pidfController = new PIDFController(kp, ki, kd, kf);
         feedforward = new ArmFeedforward(ks, kcos, kv, ka);
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        this.telemetry = dashboard.getTelemetry();
+
+        target = -100;
     }
 
-    public String teleopPeriodic() {
-//        armMotors.set(gamepad.right_stick_x);
+    public void teleopPeriodic() {
         setTarget(target + 10 * gamepad.right_stick_x);
+        angle = rightArm.getCurrentPosition() / 1440.0;
         if (!pidfController.atSetPoint()) {
-            double output = pidfController.calculate(leftArm.getCurrentPosition());
-            armMotors.set(output);
+            output = pidfController.calculate(rightArm.getCurrentPosition());
+            double ff = kf * feedforward.calculate(angle, output);
+            armMotors.set(output + ff);
         }
-        return target + ", " + leftArm.getCurrentPosition();
+        telemetry.addData("Arm Target", target);
+        telemetry.addData("Output", output);
+        telemetry.addData("Arm Position", rightArm.getCurrentPosition());
+        telemetry.addData("Arm Angle", angle);
     }
 }
