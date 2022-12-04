@@ -1,30 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.Map;
 
-
-@TeleOp(name = "Full TeleOp", group = "Iterative Opmode")
-public class RobotTeleOp extends OpMode {
+@TeleOp(name = "Main TeleOp", group = "Iterative Opmode")
+public class MainTeleOp extends OpMode {
+    // Declare OpMode members.
     private Drive drive;
     private Elevator elevator;
     private Intake intake;
     private Arm arm;
 
+    private GamepadEx driverGamepad;
+    private GamepadEx operatorGamepad;
+
     private FtcDashboard dashboard;
 
-    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -34,10 +31,18 @@ public class RobotTeleOp extends OpMode {
         dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
 
-        drive = new Drive(hardwareMap, gamepad1, telemetry);
-        elevator = new Elevator(hardwareMap, gamepad1);
-        intake = new Intake(hardwareMap, gamepad1);
-        arm = new Arm(hardwareMap, gamepad1, telemetry);
+        driverGamepad = new GamepadEx(gamepad1);
+        operatorGamepad = new GamepadEx(gamepad2);
+
+        drive = new Drive(
+                hardwareMap,
+                telemetry,
+                () -> driverGamepad.getLeftY(),
+                () -> driverGamepad.getLeftX()
+        );
+        elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
+        arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightX());
+        intake = new Intake(hardwareMap);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -74,6 +79,8 @@ public class RobotTeleOp extends OpMode {
         arm.teleopPeriodic();
         intake.teleopPeriodic();
 
+        telemetry.addData("left_stick_y", driverGamepad.getLeftY());
+        telemetry.addData("left_stick_x", driverGamepad.getLeftX());
         telemetry.update();
     }
 

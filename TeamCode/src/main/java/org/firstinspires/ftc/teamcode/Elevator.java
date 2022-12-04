@@ -1,28 +1,36 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.function.DoubleSupplier;
 
 public class Elevator {
     private DcMotor LeftElevator;
     private DcMotor RightElevator;
+    private Motor rightElevator;
+    private Motor leftElevator;
+    private MotorGroup elevatorMotors;
 
-    private HardwareMap hardwareMap;
-    private Gamepad gamepad;
+    private Telemetry telemetry;
+    private DoubleSupplier upInput;
 
-    public Elevator(HardwareMap hardwareMap, Gamepad gamepad1) {
-        this.hardwareMap = hardwareMap;
-        this.gamepad = gamepad1;
+    public Elevator(HardwareMap hardwareMap, Telemetry telemetry, DoubleSupplier upInput) {
+        this.telemetry = telemetry;
+        this.upInput = upInput;
+
+        rightElevator = new Motor(hardwareMap, "RightArm");
+        leftElevator = new Motor(hardwareMap, "LeftArm");
+        rightElevator.setInverted(true);
+        elevatorMotors = new MotorGroup(rightElevator, leftElevator);
     }
 
     public void setHeight(float height) {
 
-    }
-
-    public void setPowers(float power) {
-        LeftElevator.setPower(power);
-        RightElevator.setPower(-power);
     }
 
     public void autoInit() {
@@ -34,11 +42,9 @@ public class Elevator {
     }
 
     public void teleopInit() {
-        LeftElevator = hardwareMap.get(DcMotor.class, "LeftElevator");
-        RightElevator = hardwareMap.get(DcMotor.class, "RightElevator");
     }
 
     public void teleopPeriodic() {
-        setPowers(gamepad.right_stick_y);
+        elevatorMotors.set(upInput.getAsDouble());
     }
 }
