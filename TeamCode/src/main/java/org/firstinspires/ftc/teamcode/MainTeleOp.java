@@ -81,6 +81,8 @@ public class MainTeleOp extends OpMode {
 
         telemetry.addData("left_stick_y", driverGamepad.getLeftY());
         telemetry.addData("left_stick_x", driverGamepad.getLeftX());
+        telemetry.addData("right_stick_y", driverGamepad.getRightY());
+        telemetry.addData("right_stick_x", driverGamepad.getRightX());
         telemetry.update();
     }
 

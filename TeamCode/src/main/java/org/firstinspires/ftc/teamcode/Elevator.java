@@ -23,8 +23,8 @@ public class Elevator {
         this.telemetry = telemetry;
         this.upInput = upInput;
 
-        rightElevator = new Motor(hardwareMap, "RightArm");
-        leftElevator = new Motor(hardwareMap, "LeftArm");
+        rightElevator = new Motor(hardwareMap, "RightElevator");
+        leftElevator = new Motor(hardwareMap, "LeftElevator");
         rightElevator.setInverted(true);
         elevatorMotors = new MotorGroup(rightElevator, leftElevator);
     }
@@ -46,5 +46,7 @@ public class Elevator {
 
     public void teleopPeriodic() {
         elevatorMotors.set(upInput.getAsDouble());
+
+        telemetry.addData("elevatorMotorPower", elevatorMotors.get());
     }
 }
