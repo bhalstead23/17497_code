@@ -76,7 +76,7 @@ public class MainTeleOp extends OpMode {
     public void loop() {
         drive.teleopPeriodic();
         elevator.teleopPeriodic();
-        arm.teleopPeriodic();
+//        arm.teleopPeriodic();
         intake.teleopPeriodic();
 
         telemetry.addData("left_stick_y", driverGamepad.getLeftY());
