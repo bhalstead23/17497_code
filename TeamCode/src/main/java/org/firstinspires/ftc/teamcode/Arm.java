@@ -28,11 +28,11 @@ public class Arm {
     private PIDController pidController;
     private ArmFeedforward feedforward;
 
-    public static double kp = 0.05;
-    public static double ki = 0.001;
+    public static double kp = 0.01;
+    public static double ki = 0.000;
     public static double kd = 0;
 
-    public static double ffWeight = 0.1;
+    public static double ffWeight = 0.0;
 
     public static double ks = 0.1; //static gain
     public static double kcos = 0; //gravity gain

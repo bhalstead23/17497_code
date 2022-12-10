@@ -42,7 +42,7 @@ public class MainTeleOp extends OpMode {
         );
         elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
         arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightX());
-        intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap, telemetry, driverGamepad.gamepad);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -76,7 +76,7 @@ public class MainTeleOp extends OpMode {
     public void loop() {
         drive.teleopPeriodic();
         elevator.teleopPeriodic();
-//        arm.teleopPeriodic();
+        arm.teleopPeriodic();
         intake.teleopPeriodic();
 
         telemetry.addData("left_stick_y", driverGamepad.getLeftY());
