@@ -4,13 +4,13 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name = "Main TeleOp", group = "Iterative Opmode")
-public class MainTeleOp extends OpMode {
+public class GambleAuto extends OpMode {
     // Declare OpMode members.
     private Drive drive;
     private Elevator elevator;
@@ -81,10 +81,7 @@ public class MainTeleOp extends OpMode {
      */
     @Override
     public void loop() {
-        drive.teleopPeriodic();
-        //elevator.teleopPeriodic();
-        arm.teleopPeriodic();
-        intake.teleopPeriodic();
+        drive.autoPeriodic();
 
         telemetry.addData("left_stick_y", driverGamepad.getLeftY());
         telemetry.addData("left_stick_x", driverGamepad.getLeftX());

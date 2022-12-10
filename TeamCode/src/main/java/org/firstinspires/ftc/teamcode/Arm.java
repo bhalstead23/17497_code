@@ -28,11 +28,11 @@ public class Arm {
     private PIDController pidController;
     private ArmFeedforward feedforward;
 
-    public static double kp = 0.01;
-    public static double ki = 0.000;
+    public static double kp = 0.04;
+    public static double ki = 0.0001;
     public static double kd = 0;
 
-    public static double ffWeight = 0.0;
+    public static double ffWeight = 0.1;
 
     public static double ks = 0.1; //static gain
     public static double kcos = 0; //gravity gain
@@ -57,7 +57,6 @@ public class Arm {
         pidController = new PIDController(kp, ki, kd);
         feedforward = new ArmFeedforward(ks, kcos, kv);
 
-        target = 0.0;
     }
 
     public Arm(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -69,6 +68,19 @@ public class Arm {
         pidController.setSetPoint(target);
     }
 
+    // note: still requires telemetry.update() in main opmode
+    public void handleTelemetry() {
+        telemetry.addData("Arm Target", target);
+        telemetry.addData("output", output);
+        telemetry.addData("Output * 1000", output * 1000);
+        telemetry.addData("pidOutput * 1000", pidOutput * 1000);
+        telemetry.addData("ffOutput * 1000", ffOutput * 1000);
+        telemetry.addData("Arm Position", rightArm.getCurrentPosition());
+        telemetry.addData("Arm Angle", angle);
+        telemetry.addData("Arm Angle * 100", angle * 100);
+        telemetry.addData("Arm Angle * 1000", angle * 1000);
+    }
+
     public void autoInit() {
 
     }
@@ -78,13 +90,13 @@ public class Arm {
     }
 
     public void teleopInit() {
-
+        setTarget(rightArm.getCurrentPosition());
     }
 
     public void teleopPeriodic() {
         // How often does this loop?
 
-        setTarget(target + 10 * rotationInput.getAsDouble()); // do we want something more intricate?
+        setTarget(target + 5 * rotationInput.getAsDouble()); // do we want something more intricate?
         angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
 
         boolean atSetPoint = pidController.atSetPoint();
@@ -99,14 +111,6 @@ public class Arm {
         armMotors.set(output);
         // }
 
-        telemetry.addData("Arm Target", target);
-        telemetry.addData("output", output);
-        telemetry.addData("Output * 1000", output * 1000);
-        telemetry.addData("pidOutput * 1000", pidOutput * 1000);
-        telemetry.addData("ffOutput * 1000", ffOutput * 1000);
-        telemetry.addData("Arm Position", rightArm.getCurrentPosition());
-        telemetry.addData("Arm Angle", angle);
-        telemetry.addData("Arm Angle * 100", angle * 100);
-        telemetry.addData("Arm Angle * 1000", angle * 1000);
+        handleTelemetry();
     }
 }
