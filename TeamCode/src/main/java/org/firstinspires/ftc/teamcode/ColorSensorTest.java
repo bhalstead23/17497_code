@@ -6,21 +6,24 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name = "Gamble Auto", group = "Iterative Opmode")
-public class GambleAuto extends OpMode {
+@TeleOp(name = "Color Sensor Test", group = "Iterative Opmode")
+public class ColorSensorTest extends OpMode {
     // Declare OpMode members.
     private Drive drive;
     private Elevator elevator;
     private Intake intake;
     private Arm arm;
 
+    private ColorSensor colorSensor;
+
     private GamepadEx driverGamepad;
     private GamepadEx operatorGamepad;
-
-    private FtcDashboard dashboard;
+//
+//    private FtcDashboard dashboard;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -29,8 +32,8 @@ public class GambleAuto extends OpMode {
      */
     @Override
     public void init() {
-        dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
+//        dashboard = FtcDashboard.getInstance();
+//        telemetry = dashboard.getTelemetry();
 
         driverGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
@@ -45,6 +48,8 @@ public class GambleAuto extends OpMode {
         elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
         arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightY());
         intake = new Intake(hardwareMap, telemetry, () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_UP), () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_DOWN));
+
+        colorSensor = hardwareMap.colorSensor.get("Color");
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -81,12 +86,28 @@ public class GambleAuto extends OpMode {
      */
     @Override
     public void loop() {
-//        drive.autoPeriodic();
+        drive.teleopPeriodic();
+        //elevator.teleopPeriodic();
+        //arm.teleopPeriodic();
+        //intake.teleopPeriodic();
 
-        telemetry.addData("left_stick_y", driverGamepad.getLeftY());
-        telemetry.addData("left_stick_x", driverGamepad.getLeftX());
-        telemetry.addData("right_stick_y", driverGamepad.getRightY());
-        telemetry.addData("right_stick_x", driverGamepad.getRightX());
+//        telemetry.addData("left_stick_y", driverGamepad.getLeftY());
+//        telemetry.addData("left_stick_x", driverGamepad.getLeftX());
+//        telemetry.addData("right_stick_y", driverGamepad.getRightY());
+//        telemetry.addData("right_stick_x", driverGamepad.getRightX());
+
+        int[] colors = new int[] {colorSensor.red(), colorSensor.blue(), colorSensor.green()};
+        String[] colorNames = new String[] {"red", "blue", "green"};
+
+        int maxI = 0;
+        for (int i = 0; i < 3; i++) {
+            if (colors[i] > colors[maxI]) {
+                maxI = i;
+            }
+        }
+
+        telemetry.addData("CURR COLOR", colorNames[maxI]);
+
         telemetry.update();
     }
 
