@@ -29,6 +29,10 @@ public class Elevator {
         elevatorMotors = new MotorGroup(rightElevator, leftElevator);
     }
 
+    public Elevator(HardwareMap hardwareMap, Telemetry telemetry) {
+        this(hardwareMap, telemetry, null);
+    }
+
     public void setHeight(float height) {
 
     }
