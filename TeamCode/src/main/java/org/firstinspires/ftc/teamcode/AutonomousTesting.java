@@ -39,7 +39,13 @@ public class AutonomousTesting extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor frontLeft;
     private DcMotor frontRight;
-    private DcMotor[] motors;
+
+    private DcMotor[] leftMotors;
+    private DcMotor[] rightMotors;
+    private DcMotor[] allMotors;
+
+    private static final int MOTOR_TICKS = 1440;
+    private static final double WHEEL_CIRCUMFERENCE = 4.0 * 2 * Math.PI;
 
     private void initializeHardware() {
         driverGamepad = new GamepadEx(gamepad1);
@@ -57,12 +63,14 @@ public class AutonomousTesting extends LinearOpMode {
         backRight = hardwareMap.dcMotor.get("BackRightMotor");
         frontRight = hardwareMap.dcMotor.get("FrontRightMotor");
 
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motors = new DcMotor[] {backLeft, frontLeft, backRight, frontRight};
+        allMotors = new DcMotor[] {backLeft, frontLeft, backRight, frontRight};
+        leftMotors = new DcMotor[] {backLeft, frontLeft};
+        rightMotors = new DcMotor[] {backRight, frontRight};
 
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : allMotors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
@@ -89,46 +97,53 @@ public class AutonomousTesting extends LinearOpMode {
         return currColor;
     }
 
-    private void driveForward(double speed, int ticks) {
-        for (DcMotor motor : motors) {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    private void driveForward(double speed, double inches) {
+        int ticks = (int) (inches / WHEEL_CIRCUMFERENCE * MOTOR_TICKS);
+        drive(speed, speed, ticks, ticks);
+    }
+
+    private void drive(double leftSpeed, double rightSpeed, int leftTicks, int rightTicks) {
+        if (leftSpeed * leftTicks < 0) {
+            leftTicks *= -1;
         }
 
-        for (DcMotor motor : motors) {
-            motor.setPower(speed);
+        if (rightSpeed * rightTicks < 0) {
+            rightTicks *= -1;
         }
 
-        for (DcMotor motor : motors) {
-            motor.setTargetPosition(ticks);
-        }
+        for (DcMotor motor : allMotors) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        for (DcMotor motor : motors) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        for (DcMotor motor : leftMotors) motor.setPower(leftSpeed);
+
+        for (DcMotor motor : leftMotors) motor.setTargetPosition(leftTicks);
+
+        for (DcMotor motor : rightMotors) motor.setPower(rightSpeed);
+
+        for (DcMotor motor : rightMotors) motor.setTargetPosition(rightTicks);
+
+        for (DcMotor motor : allMotors) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Status:", "Starting path");
         telemetry.update();
 
-        while (backLeft.isBusy()) {
-            telemetry.addData("Path:", "Moving " + ticks + " ticks forward");
+        while (backLeft.isBusy() || backRight.isBusy()) {
+            telemetry.addData("Path:", "Moving " + leftTicks + " left ticks " + rightTicks + " right ticks");
             getCurrColor();
             telemetry.update();
         }
 
-        for (DcMotor motor : motors) {
-            motor.setPower(0);
-        }
+        for (DcMotor motor : allMotors) motor.setPower(0);
 
         telemetry.addData("Path:", "Done!");
         telemetry.update();
     }
-
+    
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         initializeHardware();
 
         waitForStart();
 
-        driveForward(0.5, 1000);
+        drive(0.5, -0.5, MOTOR_TICKS, MOTOR_TICKS);
     }
 }
