@@ -4,13 +4,8 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -20,12 +15,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "AutononmousTesting", group = "Linear Opmode")
 public class AutonomousTesting extends LinearOpMode {
     // Declare OpMode members.
-    private Drive drive;
+//    private Drive drive;
     private Elevator elevator;
     private Intake intake;
     private Arm arm;
 
-    private DashboardSucks ds;
+    private TurnConstantHolder ds;
 
     private FtcDashboard dashboard;
 
@@ -46,6 +41,7 @@ public class AutonomousTesting extends LinearOpMode {
     private DcMotor[] allMotors;
 
     private static final int MOTOR_TICKS = 1440;
+    private static final double ONE_SQUARE_INCHES = 23.5;
     private static double WHEEL_CIRCUMFERENCE = 4.0 * 2 * Math.PI;
 
     private void initializeHardware() {
@@ -60,7 +56,7 @@ public class AutonomousTesting extends LinearOpMode {
         arm = new Arm(hardwareMap, telemetry);
         intake = new Intake(hardwareMap, telemetry);
 
-        ds = new DashboardSucks(hardwareMap, telemetry);
+        ds = new TurnConstantHolder(hardwareMap, telemetry);
 
         colorSensor = hardwareMap.colorSensor.get("Color");
 
@@ -97,7 +93,7 @@ public class AutonomousTesting extends LinearOpMode {
 
         String currColor = colorNames[maxI];
 
-        telemetry.addData("CURR COLOR", currColor);
+        telemetry.addData("Reading Color", currColor);
         telemetry.update();
 
         return maxI;
@@ -145,26 +141,15 @@ public class AutonomousTesting extends LinearOpMode {
     }
 
     private void turnLeft() {
-        int TURN_TICKS = (int) DashboardSucks.TURN_TICKS;
+        int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
         drive(-0.2, 0.2, TURN_TICKS, TURN_TICKS);
     }
 
     private void turnRight() {
-        int TURN_TICKS = (int) DashboardSucks.TURN_TICKS;
+        int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
         drive(0.2, -0.2, TURN_TICKS, TURN_TICKS);
     }
 
-    private void doAuto(int colorIndex) {
-        telemetry.addData("Status", "Performing auto #" + (colorIndex + 1) + ".");
-
-        if (colorIndex == 0) { // red
-
-        } else if (colorIndex == 1) { // green
-
-        } else { // blue
-
-        }
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -174,10 +159,27 @@ public class AutonomousTesting extends LinearOpMode {
 
 //        driveForward(0.5, 23);
 
-        for (int i = 0; i < 1000; i++) {
-            turnLeft();
+//        for (int i = 0; i < 1000; i++) {
+//            turnLeft();
+//
+//            sleep(5000);
+//        }
 
-            sleep(5000);
+        driveForward(0.2, ONE_SQUARE_INCHES);
+
+        int colorIndex = getCurrColor();
+
+        telemetry.addData("Status", "Performing auto #" + (colorIndex + 1) + ".");
+        telemetry.update();
+
+        if (colorIndex == 0) { // red
+            turnLeft();
+            driveForward(0.2, ONE_SQUARE_INCHES);
+        } else if (colorIndex == 1) { // green
+//            driveForward(0.5, 23.5);
+        } else { // blue
+            turnRight();
+            driveForward(0.2, ONE_SQUARE_INCHES);
         }
     }
 }

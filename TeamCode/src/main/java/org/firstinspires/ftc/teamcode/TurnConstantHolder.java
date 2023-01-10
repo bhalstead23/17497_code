@@ -8,12 +8,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Config
-public class DashboardSucks {
-    public static double TURN_TICKS = 1500;
+public class TurnConstantHolder {
+    public static double TURN_TICKS = 700;
 
     private Telemetry telemetry;
 
-    public DashboardSucks(HardwareMap hardwareMap, Telemetry telemetry) {
+    public TurnConstantHolder(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 }
