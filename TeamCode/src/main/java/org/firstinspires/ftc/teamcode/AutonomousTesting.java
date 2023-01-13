@@ -40,10 +40,6 @@ public class AutonomousTesting extends LinearOpMode {
     private DcMotor[] rightMotors;
     private DcMotor[] allMotors;
 
-    private static final int MOTOR_TICKS = 1440;
-    private static final double ONE_SQUARE_INCHES = 23.5;
-    private static double WHEEL_CIRCUMFERENCE = 4.0 * 2 * Math.PI;
-
     private void initializeHardware() {
         dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
@@ -56,7 +52,7 @@ public class AutonomousTesting extends LinearOpMode {
         arm = new Arm(hardwareMap, telemetry);
         intake = new Intake(hardwareMap, telemetry);
 
-        ds = new TurnConstantHolder(hardwareMap, telemetry);
+        ds = new TurnConstantHolder(telemetry);
 
         colorSensor = hardwareMap.colorSensor.get("Color");
 
@@ -140,14 +136,14 @@ public class AutonomousTesting extends LinearOpMode {
         telemetry.update();
     }
 
-    private void turnLeft() {
+    private void turnLeft(double speed) {
         int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
-        drive(-0.2, 0.2, TURN_TICKS, TURN_TICKS);
+        drive(-speed, speed, TURN_TICKS, TURN_TICKS);
     }
 
-    private void turnRight() {
+    private void turnRight(double speed) {
         int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
-        drive(0.2, -0.2, TURN_TICKS, TURN_TICKS);
+        drive(speed, -speed, TURN_TICKS, TURN_TICKS);
     }
 
 
@@ -157,15 +153,7 @@ public class AutonomousTesting extends LinearOpMode {
 
         waitForStart();
 
-//        driveForward(0.5, 23);
-
-//        for (int i = 0; i < 1000; i++) {
-//            turnLeft();
-//
-//            sleep(5000);
-//        }
-
-        driveForward(0.2, ONE_SQUARE_INCHES);
+        driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
 
         int colorIndex = getCurrColor();
 
@@ -173,13 +161,18 @@ public class AutonomousTesting extends LinearOpMode {
         telemetry.update();
 
         if (colorIndex == 0) { // red
-            turnLeft();
-            driveForward(0.2, ONE_SQUARE_INCHES);
+            turnLeft(AUTO_SPEED);
+            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
         } else if (colorIndex == 1) { // green
 //            driveForward(0.5, 23.5);
         } else { // blue
-            turnRight();
-            driveForward(0.2, ONE_SQUARE_INCHES);
+            turnRight(AUTO_SPEED);
+            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
         }
     }
+
+    private static final int MOTOR_TICKS = 1440;
+    private static final double ONE_SQUARE_INCHES = 23.5;
+    private static final double WHEEL_CIRCUMFERENCE = 4.0 * 2 * Math.PI;
+    private static final double AUTO_SPEED = 0.25;
 }

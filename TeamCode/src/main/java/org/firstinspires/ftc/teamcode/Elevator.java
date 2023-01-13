@@ -10,8 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.function.DoubleSupplier;
 
 public class Elevator {
-    private DcMotor LeftElevator;
-    private DcMotor RightElevator;
     private Motor rightElevator;
     private Motor leftElevator;
     private MotorGroup elevatorMotors;

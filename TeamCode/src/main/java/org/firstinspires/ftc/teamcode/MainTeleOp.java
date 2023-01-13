@@ -71,7 +71,7 @@ public class MainTeleOp extends OpMode {
         runtime.reset();
 
         drive.teleopInit();
-        //elevator.teleopInit();
+        elevator.teleopInit();
         arm.teleopInit();
         intake.teleopInit();
     }
@@ -82,7 +82,7 @@ public class MainTeleOp extends OpMode {
     @Override
     public void loop() {
         drive.teleopPeriodic();
-        //elevator.teleopPeriodic();
+        elevator.teleopPeriodic();
         arm.teleopPeriodic();
         intake.teleopPeriodic();
 
