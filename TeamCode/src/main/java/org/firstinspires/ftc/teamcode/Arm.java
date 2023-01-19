@@ -17,8 +17,8 @@ import java.util.function.DoubleSupplier;
 @SuppressWarnings("SpellCheckingInspection")
 @Config
 public class Arm {
-    private Motor rightArm;
-    private Motor leftArm;
+    public Motor rightArm;
+    public Motor leftArm;
     private MotorGroup armMotors;
 
     private Telemetry telemetry;
