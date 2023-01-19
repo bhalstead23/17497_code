@@ -95,8 +95,8 @@ public class Arm {
 
     public void teleopPeriodic() {
         // How often does this loop?
-
-        setTarget(target + 5 * rotationInput.getAsDouble()); // do we want something more intricate?
+        double positionChange = 5 * Math.signum(rotationInput.getAsDouble()) * Math.pow(rotationInput.getAsDouble(), 2);
+        setTarget(target + positionChange); // do we want something more intricate?
         angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
 
         boolean atSetPoint = pidController.atSetPoint();

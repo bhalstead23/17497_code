@@ -42,7 +42,13 @@ public class MainTeleOp extends OpMode {
                 () -> driverGamepad.getLeftX(),
                 () -> driverGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)
         );
-        elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
+        elevator = new Elevator(
+                hardwareMap,
+                telemetry,
+                () -> driverGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
+                () -> driverGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> driverGamepad.getButton(GamepadKeys.Button.X)
+        );
         arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightX());
         intake = new Intake(hardwareMap, telemetry, () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_UP), () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_DOWN));
 
@@ -72,7 +78,7 @@ public class MainTeleOp extends OpMode {
 
         drive.teleopInit();
         elevator.teleopInit();
-        arm.teleopInit();
+        // arm.teleopInit();
         intake.teleopInit();
     }
 
@@ -83,7 +89,7 @@ public class MainTeleOp extends OpMode {
     public void loop() {
         drive.teleopPeriodic();
         elevator.teleopPeriodic();
-        arm.teleopPeriodic();
+        // arm.teleopPeriodic();
         intake.teleopPeriodic();
 
         telemetry.addData("left_stick_y", driverGamepad.getLeftY());

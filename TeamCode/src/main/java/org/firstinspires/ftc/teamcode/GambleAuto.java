@@ -44,7 +44,6 @@ public class GambleAuto extends OpMode {
                 () -> driverGamepad.getLeftX(),
                 () -> driverGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)
         );
-        elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
         arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightY());
         intake = new Intake(hardwareMap, telemetry, () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_UP), () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_DOWN));
 
@@ -73,7 +72,6 @@ public class GambleAuto extends OpMode {
         runtime.reset();
 
         drive.teleopInit();
-        //elevator.teleopInit();
         arm.teleopInit();
         intake.teleopInit();
     }
