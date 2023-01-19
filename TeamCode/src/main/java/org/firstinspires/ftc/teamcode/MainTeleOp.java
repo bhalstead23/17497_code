@@ -43,7 +43,7 @@ public class MainTeleOp extends OpMode {
                 () -> driverGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)
         );
         elevator = new Elevator(hardwareMap, telemetry, () -> driverGamepad.getRightY());
-        arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightY());
+        arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightX());
         intake = new Intake(hardwareMap, telemetry, () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_UP), () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_DOWN));
 
         // Tell the driver that initialization is complete.
