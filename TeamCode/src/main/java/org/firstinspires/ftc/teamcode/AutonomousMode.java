@@ -13,11 +13,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @Autonomous(name = "AutononmousTesting", group = "Linear Opmode")
-public class AutonomousTesting extends LinearOpMode {
+public class AutonomousMode extends LinearOpMode {
     // Declare OpMode members.
 //    private Drive drive;
-    private Elevator elevator;
-    private Intake intake;
+//    private Elevator elevator;
+//    private Intake intake;
     private Arm arm;
 
     private TurnConstantHolder ds;
@@ -48,9 +48,9 @@ public class AutonomousTesting extends LinearOpMode {
         operatorGamepad = new GamepadEx(gamepad2);
 
         //drive = new Drive(hardwareMap, telemetry);
-        elevator = new Elevator(hardwareMap, telemetry);
+//        elevator = new Elevator(hardwareMap, telemetry);
         arm = new Arm(hardwareMap, telemetry);
-        intake = new Intake(hardwareMap, telemetry);
+//        intake = new Intake(hardwareMap, telemetry);
 
         ds = new TurnConstantHolder(telemetry);
 
@@ -162,7 +162,7 @@ public class AutonomousTesting extends LinearOpMode {
 
         if (colorIndex == 0) { // red
             turnLeft(AUTO_SPEED);
-            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
+            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES+2);
         } else if (colorIndex == 1) { // green
 //            driveForward(0.5, 23.5);
         } else { // blue
