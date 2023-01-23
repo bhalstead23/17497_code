@@ -28,6 +28,8 @@ public class Arm {
     private PIDController pidController;
     private ArmFeedforward feedforward;
 
+    private static double AUTO_INIT_ANGLE = Math.PI / 4;
+
     public static double kp = 0.04;
     public static double ki = 0.0001;
     public static double kd = 0;
@@ -68,6 +70,10 @@ public class Arm {
         pidController.setSetPoint(target);
     }
 
+    public void setTargetRadians(double targetRads) {
+        setTarget(radiansToTicks(targetRads));
+    }
+
     // note: still requires telemetry.update() in main opmode
     public void handleTelemetry() {
         telemetry.addData("Arm Target", target);
@@ -81,15 +87,38 @@ public class Arm {
         telemetry.addData("Arm Angle * 1000", angle * 1000);
     }
 
-    public void autoInit() {
+    public double ticksToRadians(double ticks) {
+        return 2.0 * Math.PI * ticks / 1440.0;
+    }
 
+    public double radiansToTicks(double angle) {
+        return 1440.0 * angle / (2.0 * Math.PI);
+    }
+
+    public void autoInit() {
+        armMotors.resetEncoder();
+        setTarget(radiansToTicks(AUTO_INIT_ANGLE));
     }
 
     public void autoPeriodic() {
+        angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
+        boolean atSetPoint = pidController.atSetPoint();
+        //if (!atSetPoint) { // only runs if arm is out of position
+        pidOutput = pidController.calculate(rightArm.getCurrentPosition(), target);
+        // "output" must be rads/sec
+        ffOutput = ffWeight * feedforward.calculate(
+                angle,
+                0
+        );
+        output = pidOutput + ffOutput; // should this be scaled somehow? it can exceed 1 right now (?)
+        armMotors.set(output);
+        // }
 
+        handleTelemetry();
     }
 
     public void teleopInit() {
+        armMotors.resetEncoder();
         setTarget(rightArm.getCurrentPosition());
     }
 
@@ -97,8 +126,8 @@ public class Arm {
         // How often does this loop?
         double positionChange = 5 * Math.signum(rotationInput.getAsDouble()) * Math.pow(rotationInput.getAsDouble(), 2);
         setTarget(target + positionChange); // do we want something more intricate?
-        angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
 
+        angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
         boolean atSetPoint = pidController.atSetPoint();
         //if (!atSetPoint) { // only runs if arm is out of position
         pidOutput = pidController.calculate(rightArm.getCurrentPosition(), target);

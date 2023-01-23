@@ -20,7 +20,7 @@ public class AutonomousTesting extends LinearOpMode {
     private Intake intake;
     private Arm arm;
 
-    private TurnConstantHolder ds;
+    private AutoConfigHolder ds;
 
     private FtcDashboard dashboard;
 
@@ -52,7 +52,7 @@ public class AutonomousTesting extends LinearOpMode {
         arm = new Arm(hardwareMap, telemetry);
         intake = new Intake(hardwareMap, telemetry);
 
-        ds = new TurnConstantHolder(telemetry);
+        ds = new AutoConfigHolder(telemetry);
 
         colorSensor = hardwareMap.colorSensor.get("Color");
 
@@ -137,12 +137,12 @@ public class AutonomousTesting extends LinearOpMode {
     }
 
     private void turnLeft(double speed) {
-        int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
+        int TURN_TICKS = (int) AutoConfigHolder.TURN_TICKS;
         drive(-speed, speed, TURN_TICKS, TURN_TICKS);
     }
 
     private void turnRight(double speed) {
-        int TURN_TICKS = (int) TurnConstantHolder.TURN_TICKS;
+        int TURN_TICKS = (int) AutoConfigHolder.TURN_TICKS;
         drive(speed, -speed, TURN_TICKS, TURN_TICKS);
     }
 
