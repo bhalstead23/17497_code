@@ -17,8 +17,8 @@ import java.util.function.DoubleSupplier;
 @SuppressWarnings("SpellCheckingInspection")
 @Config
 public class Arm {
-    private Motor rightArm;
-    private Motor leftArm;
+    public Motor rightArm;
+    public Motor leftArm;
     private MotorGroup armMotors;
 
     private Telemetry telemetry;
@@ -122,9 +122,7 @@ public class Arm {
         setTarget(rightArm.getCurrentPosition());
     }
 
-    public void teleopPeriodic() {
-        // How often does this loop?
-        double positionChange = 5 * Math.signum(rotationInput.getAsDouble()) * Math.pow(rotationInput.getAsDouble(), 2);
+    private void changePosition(double positionChange) {
         setTarget(target + positionChange); // do we want something more intricate?
 
         angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
@@ -141,5 +139,11 @@ public class Arm {
         // }
 
         handleTelemetry();
+    }
+
+    public void teleopPeriodic() {
+        // How often does this loop?
+        double positionChange = 5 * Math.signum(rotationInput.getAsDouble()) * Math.pow(rotationInput.getAsDouble(), 2);
+        changePosition(positionChange);
     }
 }

@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -13,11 +14,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @Autonomous(name = "AutononmousTesting", group = "Linear Opmode")
-public class AutonomousTesting extends LinearOpMode {
+public class AutonomousMode extends LinearOpMode {
     // Declare OpMode members.
 //    private Drive drive;
-    private Elevator elevator;
-    private Intake intake;
+//    private Elevator elevator;
+//    private Intake intake;
     private Arm arm;
 
     private AutoConfigHolder ds;
@@ -40,6 +41,8 @@ public class AutonomousTesting extends LinearOpMode {
     private DcMotor[] rightMotors;
     private DcMotor[] allMotors;
 
+    private Motor[] armMotors;
+
     private void initializeHardware() {
         dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
@@ -48,9 +51,9 @@ public class AutonomousTesting extends LinearOpMode {
         operatorGamepad = new GamepadEx(gamepad2);
 
         //drive = new Drive(hardwareMap, telemetry);
-        elevator = new Elevator(hardwareMap, telemetry);
+//        elevator = new Elevator(hardwareMap, telemetry);
         arm = new Arm(hardwareMap, telemetry);
-        intake = new Intake(hardwareMap, telemetry);
+//        intake = new Intake(hardwareMap, telemetry);
 
         ds = new AutoConfigHolder(telemetry);
 
@@ -67,6 +70,8 @@ public class AutonomousTesting extends LinearOpMode {
         allMotors = new DcMotor[] {backLeft, frontLeft, backRight, frontRight};
         leftMotors = new DcMotor[] {backLeft, frontLeft};
         rightMotors = new DcMotor[] {backRight, frontRight};
+
+        armMotors = new Motor[] { arm.leftArm, arm.rightArm};
 
         for (DcMotor motor : allMotors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -126,7 +131,6 @@ public class AutonomousTesting extends LinearOpMode {
 
         while (backLeft.isBusy() || backRight.isBusy()) {
             telemetry.addData("Path:", "Moving " + leftTicks + " left ticks " + rightTicks + " right ticks");
-            getCurrColor();
             telemetry.update();
         }
 
@@ -134,6 +138,27 @@ public class AutonomousTesting extends LinearOpMode {
 
         telemetry.addData("Path:", "Done!");
         telemetry.update();
+    }
+
+    private void moveArm(double speed, int ticks) {
+        for (Motor motor : armMotors) {
+            motor.setRunMode(Motor.RunMode.PositionControl);
+            motor.setPositionCoefficient(TurnConstantHolder.AUTO_P_COEFF);
+            motor.resetEncoder();
+        }
+
+        for (Motor motor : armMotors) {
+            motor.set(0);
+            motor.setTargetPosition(ticks);
+        }
+
+        while(!armMotors[0].atTargetPosition()) {
+            for (Motor motor: armMotors) {
+                motor.set(speed);
+            }
+        }
+
+        for (Motor motor : armMotors) motor.stopMotor();
     }
 
     private void turnLeft(double speed) {
@@ -146,15 +171,7 @@ public class AutonomousTesting extends LinearOpMode {
         drive(speed, -speed, TURN_TICKS, TURN_TICKS);
     }
 
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-        initializeHardware();
-
-        waitForStart();
-
-        driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
-
+    private void readColorAndPark() {
         int colorIndex = getCurrColor();
 
         telemetry.addData("Status", "Performing auto #" + (colorIndex + 1) + ".");
@@ -162,13 +179,28 @@ public class AutonomousTesting extends LinearOpMode {
 
         if (colorIndex == 0) { // red
             turnLeft(AUTO_SPEED);
-            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
+            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES+2);
         } else if (colorIndex == 1) { // green
 //            driveForward(0.5, 23.5);
         } else { // blue
             turnRight(AUTO_SPEED);
             driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
         }
+    }
+
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initializeHardware();
+
+        waitForStart();
+
+//        driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
+
+        moveArm(0.1, -300);
+
+//        readColorAndPark();
+
     }
 
     private static final int MOTOR_TICKS = 1440;
