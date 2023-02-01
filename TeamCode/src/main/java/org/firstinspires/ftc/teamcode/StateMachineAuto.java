@@ -168,40 +168,25 @@ public class StateMachineAuto extends OpMode {
     public void start() {
         state = "DRIVE_TO_SIGNAL";
         arm.autoInit();
-//
-//        driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
-//
-//        int colorIndex = getCurrColor();
-//
-//        telemetry.addData("Status", "Performing auto #" + (colorIndex + 1) + ".");
-//        telemetry.update();
-//
-//        if (colorIndex == 0) { // red
-//            turnLeft(AUTO_SPEED);
-//            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
-//        } else if (colorIndex == 1) { // green
-////            driveForward(0.5, 23.5);
-//        } else { // blue
-//            turnRight(AUTO_SPEED);
-//            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
-//        }
+    }
+
+    private boolean currentlyMoving() {
+        return backLeft.isBusy() || backRight.isBusy();
     }
 
     @Override
     public void loop() {
-        if (state == "DRIVE_TO_SIGNAL") {
+        if (state.equals("DRIVE_TO_SIGNAL")) {
             driveForward(AUTO_SPEED, ONE_SQUARE_INCHES + 3);
             setState("DRIVING_TO_SIGNAL");
-
-        } else if (state == "DRIVING_TO_SIGNAL") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("DRIVING_TO_SIGNAL")) {
+            if (!currentlyMoving()) {
                 setState("READING_COLOR");
                 for (DcMotor motor : allMotors)
                     motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 for (DcMotor motor : allMotors) motor.setPower(0);
             }
-
-        } else if (state == "READING_COLOR") {
+        } else if (state.equals("READING_COLOR")) {
             int colorIndex = getCurrColor();
             telemetry.addData("Status", "Performing auto #" + (colorIndex + 1) + ".");
 
@@ -212,54 +197,53 @@ public class StateMachineAuto extends OpMode {
             } else { // blue
                 setState("TURN_TO_BLUE");
             }
-            arm.setTargetRadians(Math.PI / 2);
 
-        } else if (state == "TURN_TO_RED") {
+            arm.setTargetRadians(Math.PI / 2);
+        } else if (state.equals("TURN_TO_RED")) {
             turnLeft(AUTO_SPEED);
             setState("TURNING_TO_RED");
-        } else if (state == "TURNING_TO_RED") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("TURNING_TO_RED")) {
+            if (!currentlyMoving()) {
                 setState("DRIVE_TO_RED");
             }
-        } else if (state == "DRIVE_TO_RED") {
+        } else if (state.equals("DRIVE_TO_RED")) {
             driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
             setState("DRIVING_TO_RED");
 
-        } else if (state == "DRIVING_TO_RED") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("DRIVING_TO_RED")) {
+            if (!currentlyMoving()) {
                 setState("PARKING");
             }
 
-        } else if (state == "TURN_TO_GREEN") {
+        } else if (state.equals("TURN_TO_GREEN")) {
             setState("TURNING_TO_GREEN");
-        } else if (state == "TURNING_TO_GREEN") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("TURNING_TO_GREEN")) {
+            if (!currentlyMoving()) {
                 setState("DRIVE_TO_GREEN");
             }
-        } else if (state == "DRIVE_TO_GREEN") {
-            driveForward(0.5, 23.5);
+        } else if (state.equals("DRIVE_TO_GREEN")) {
+            driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
             setState("DRIVING_TO_GREEN");
-        } else if (state == "DRIVING_TO_GREEN") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("DRIVING_TO_GREEN")) {
+            if (!currentlyMoving()) {
                 setState("PARKING");
             }
 
-        } else if (state == "TURN_TO_BLUE") {
+        } else if (state.equals("TURN_TO_BLUE")) {
             turnRight(AUTO_SPEED);
             setState("TURNING_TO_BLUE");
-        } else if (state == "TURNING_TO_BLUE") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("TURNING_TO_BLUE")) {
+            if (!currentlyMoving()) {
                 setState("DRIVE_TO_BLUE");
             }
-        } else if (state == "DRIVE_TO_BLUE") {
+        } else if (state.equals("DRIVE_TO_BLUE")) {
             driveForward(AUTO_SPEED, ONE_SQUARE_INCHES);
             setState("DRIVING_TO_BLUE");
-        } else if (state == "DRIVING_TO_BLUE") {
-            if (!(backLeft.isBusy() || backRight.isBusy())) {
+        } else if (state.equals("DRIVING_TO_BLUE")) {
+            if (!currentlyMoving()) {
                 setState("PARKING");
             }
-
-        } else if (state == "PARKING") {
+        } else if (state.equals("PARKING")) {
             for (DcMotor motor : allMotors) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             for (DcMotor motor : allMotors) motor.setPower(0);
         }
