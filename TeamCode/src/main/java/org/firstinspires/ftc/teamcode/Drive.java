@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.DifferentialDrive;
+import com.arcrobotics.ftclib.drivebase.RobotDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
@@ -19,7 +20,7 @@ public class Drive {
     private Telemetry telemetry;
     private PIDController pidController;
 
-    private DifferentialDrive differentialDrive;
+    private CustomDifferentialDrive differentialDrive;
 
     private DoubleSupplier forwardInput;
     private DoubleSupplier rotationInput;
@@ -46,7 +47,8 @@ public class Drive {
                 new Motor(hardwareMap, "FrontRightMotor"),
                 new Motor(hardwareMap, "BackRightMotor"));
 
-        this.differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
+        this.differentialDrive = new CustomDifferentialDrive(leftMotors, rightMotors);
+        this.differentialDrive.setLeftSideMultiplier(0.9);
     }
 
     public Drive(HardwareMap hardwareMap, Telemetry telemetry) {

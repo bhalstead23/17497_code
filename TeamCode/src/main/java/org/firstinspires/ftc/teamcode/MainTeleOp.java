@@ -47,9 +47,11 @@ public class MainTeleOp extends OpMode {
                 telemetry,
                 () -> driverGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
                 () -> driverGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driverGamepad.getButton(GamepadKeys.Button.X)
+                () -> driverGamepad.getButton(GamepadKeys.Button.X),
+                () -> driverGamepad.getButton(GamepadKeys.Button.Y),
+                () -> driverGamepad.getButton(GamepadKeys.Button.A)
         );
-        arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightY());
+        arm = new Arm(hardwareMap, telemetry, () -> driverGamepad.getRightY(), () -> driverGamepad.getButton(GamepadKeys.Button.Y),()-> driverGamepad.getButton(GamepadKeys.Button.A));
         intake = new Intake(hardwareMap, telemetry, () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_UP), () -> driverGamepad.getButton(GamepadKeys.Button.DPAD_DOWN));
 
         // Tell the driver that initialization is complete.

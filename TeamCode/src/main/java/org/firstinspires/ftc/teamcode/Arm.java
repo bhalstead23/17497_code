@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -24,11 +25,14 @@ public class Arm {
     private Telemetry telemetry;
 
     private DoubleSupplier rotationInput;
+    private BooleanSupplier autoHighInput;
+    private BooleanSupplier autoZeroInput;
 
     private PIDController pidController;
     private ArmFeedforward feedforward;
 
     private static double AUTO_INIT_ANGLE = Math.PI / 4;
+    private static double highPosition = 595;
 
     public static double kp = 0.04;
     public static double ki = 0.0001;
@@ -47,8 +51,10 @@ public class Arm {
     private double ffOutput;
     private double angle;
 
-    public Arm(HardwareMap hardwareMap, Telemetry telemetry, DoubleSupplier rotationInput) {
+    public Arm(HardwareMap hardwareMap, Telemetry telemetry, DoubleSupplier rotationInput, BooleanSupplier autoHighInput, BooleanSupplier autoZeroInput) {
         this.rotationInput = rotationInput;
+        this.autoHighInput = autoHighInput;
+        this.autoZeroInput = autoZeroInput;
         this.telemetry = telemetry;
 
         rightArm = new Motor(hardwareMap, "RightArm");
@@ -62,7 +68,7 @@ public class Arm {
     }
 
     public Arm(HardwareMap hardwareMap, Telemetry telemetry) {
-        this(hardwareMap, telemetry, null);
+        this(hardwareMap, telemetry, null, null, null);
     }
 
     public void setTarget(double target) {
@@ -123,7 +129,14 @@ public class Arm {
     }
 
     private void changePosition(double positionChange) {
-        setTarget(target + positionChange); // do we want something more intricate?
+
+        if(autoHighInput.getAsBoolean()){
+            setTarget(highPosition);
+        } else if(autoZeroInput.getAsBoolean()){
+            setTarget(0);
+        } else {
+            setTarget(target + positionChange); // do we want something more intricate?
+        }
 
         angle = 2.0 * Math.PI * rightArm.getCurrentPosition() / 1440.0; // radians
         boolean atSetPoint = pidController.atSetPoint();

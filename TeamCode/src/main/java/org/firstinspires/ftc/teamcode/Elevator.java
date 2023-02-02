@@ -22,6 +22,8 @@ public class Elevator {
     private DoubleSupplier upInput;
     private DoubleSupplier downInput;
     private BooleanSupplier encoderResetInput;
+    private BooleanSupplier autoHighInput;
+    private BooleanSupplier autoZeroInput;
 
     public static double kp = 0.01;
     public static double ki = 0;
@@ -29,6 +31,7 @@ public class Elevator {
 
     public static double ffWeight = 0.1;
     public static double stepSize = 5;
+    public static double highPosition = 2500;
 
     public static double ks = 0; //static gain
     public static double kg = 0; //gravity gain
@@ -50,12 +53,16 @@ public class Elevator {
             Telemetry telemetry,
             DoubleSupplier upInput,
             DoubleSupplier downInput,
-            BooleanSupplier encoderResetInput
+            BooleanSupplier encoderResetInput,
+            BooleanSupplier autoHighInput,
+            BooleanSupplier autoZeroInput
     ) {
         this.telemetry = telemetry;
         this.upInput = upInput;
         this.downInput = downInput;
         this.encoderResetInput = encoderResetInput;
+        this.autoHighInput = autoHighInput;
+        this.autoZeroInput = autoZeroInput;
 
         upFwdMotor = new Motor(hardwareMap, "RightElevator");
         upRevMotor = new Motor(hardwareMap, "LeftElevator");
@@ -69,7 +76,7 @@ public class Elevator {
     }
 
     public Elevator(HardwareMap hardwareMap, Telemetry telemetry) {
-        this(hardwareMap, telemetry, null, null, null);
+        this(hardwareMap, telemetry, null, null, null, null, null);
     }
 
     public void setTarget(double target) {
@@ -92,21 +99,28 @@ public class Elevator {
     public void teleopPeriodic() {
         position = elevatorMotors.getPositions().get(0);
         double input;
-//        if (position < 0) {
-//            input = upInput.getAsDouble();
-//        } else {
-//            input = upInput.getAsDouble() - downInput.getAsDouble();
-//        }
+        if (position < 0) {
+            input = upInput.getAsDouble();
+        } else {
+            input = upInput.getAsDouble() - downInput.getAsDouble();
+        }
 
         input = upInput.getAsDouble() - downInput.getAsDouble();
 
-//        if (encoderResetInput.getAsBoolean()) {
-//            elevatorMotors.resetEncoder();
-//        }
+        if (encoderResetInput.getAsBoolean()) {
+            elevatorMotors.resetEncoder();
+        }
 
         // How often does this loop?
         double positionChange = stepSize * input; //Math.signum(input) * Math.pow(input, 2);
-        setTarget(target + positionChange); // do we want something more intricate?
+
+        if(autoHighInput.getAsBoolean()){
+            setTarget(highPosition);
+        } else if(autoZeroInput.getAsBoolean()){
+            setTarget(0);
+        } else {
+            setTarget(target + positionChange); // do we want something more intricate?
+        }
 
 //        boolean atSetPoint = pidController.atSetPoint();
         //if (!atSetPoint) { // only runs if arm is out of position
