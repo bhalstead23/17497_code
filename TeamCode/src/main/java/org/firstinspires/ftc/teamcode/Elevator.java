@@ -30,7 +30,7 @@ public class Elevator {
     public static double kd = 0;
 
     public static double ffWeight = 0.1;
-    public static double stepSize = 5;
+    public static double stepSize = 20;
     public static double highPosition = 2500;
 
     public static double ks = 0; //static gain

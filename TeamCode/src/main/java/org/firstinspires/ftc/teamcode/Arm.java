@@ -34,11 +34,11 @@ public class Arm {
     private static double AUTO_INIT_ANGLE = Math.PI / 4;
     private static double highPosition = 595;
 
-    public static double kp = 0.04;
-    public static double ki = 0.0001;
+    public static double kp = 0.02;
+    public static double ki = 0.001;
     public static double kd = 0;
 
-    public static double ffWeight = 0.1;
+    public static double ffWeight = 0.0;
 
     public static double ks = 0.1; //static gain
     public static double kcos = 0; //gravity gain

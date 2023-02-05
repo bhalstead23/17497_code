@@ -48,7 +48,6 @@ public class Drive {
                 new Motor(hardwareMap, "BackRightMotor"));
 
         this.differentialDrive = new CustomDifferentialDrive(leftMotors, rightMotors);
-        this.differentialDrive.setLeftSideMultiplier(0.9);
     }
 
     public Drive(HardwareMap hardwareMap, Telemetry telemetry) {
